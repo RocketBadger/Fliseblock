@@ -16,7 +16,7 @@ class Raspblock():
         self.ser.close()
         print ("serial Close!")
 
-    def PID_Mode_control(self, Mode, Speed_KP, Speed_KI, Location_KP, Location_KI, Location_KD, Yaw_holdKP, Yaw_holdKI, Yaw_holdKD):
+    def PID_Mode_control(self, Mode, Speed_KP, Speed_KI, Location_KP, Location_KI, Location_KD, Yaw_hold_KP, Yaw_hold_KI, Yaw_hold_KD):
         Function = 1
         Length = 9
         if(Mode == 0 or Mode == 1):
@@ -26,12 +26,12 @@ class Raspblock():
         Position_KP = Location_KP
         Position_KI = Location_KI
         Position_KD = Location_KD
-        Yaw_hold_KP = Yaw_holdKP
-        Yaw_hold_KI = Yaw_holdKI
-        Yaw_hold_KD = Yaw_holdKD
+        Yaw_hold_KP = Yaw_hold_KP
+        Yaw_hold_KI = Yaw_hold_KI
+        Yaw_hold_KD = Yaw_hold_KD
         
-        Checknum = (Function + Length + Run_Mode + Velocity_KP + Velocity_KI + Position_KP + Position_KI + Position_KD + Yaw_holdKP + Yaw_holdKI + Yaw_holdKD) & 0xff
-        PID_CMD = [0xFF, 0xFE, Function, Length, Run_Mode, Velocity_KP, Velocity_KI, Position_KP, Position_KI, Position_KD, Yaw_holdKP, Yaw_holdKI, Yaw_holdKD, Checknum]
+        Checknum = (Function + Length + Run_Mode + Velocity_KP + Velocity_KI + Position_KP + Position_KI + Position_KD + Yaw_hold_KP + Yaw_hold_KI + Yaw_hold_KD) & 0xff
+        PID_CMD = [0xFF, 0xFE, Function, Length, Run_Mode, Velocity_KP, Velocity_KI, Position_KP, Position_KI, Position_KD, Yaw_hold_KP, Yaw_hold_KI, Yaw_hold_KD, Checknum]
 #         print(bytes(PID_CMD))
         self.ser.write(bytes(PID_CMD))
         
@@ -46,7 +46,7 @@ class Raspblock():
         if angle_2 < 500:
             angle_2 = 500
         elif angle_2 > 1950:
-            angl_2 = 1950
+            angle_2 = 1950
         
         ServoA_H = (angle_1 >> 8) & 0x00ff # 50(0x32) - 250(0xFA)
         ServoA_L = angle_1 & 0x00ff
