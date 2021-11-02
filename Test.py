@@ -5,7 +5,9 @@ robbie = Raspblock()
 count = 0
 
 while True: 
-    if count > 1500:
+    if count > 3000:
         count = 0
-    Raspblock.Servo_control(robbie, 0, count)
+    Raspblock.Servo_control(robbie, count, 0)
     count = count + 1
+    print(count)
+    
