@@ -58,6 +58,21 @@ class Raspblock():
 #         print(bytes(Servo_CMD))
         self.ser.write(bytes(Servo_CMD))
         
+    def Servo_control_single(self, index, angle):
+        Function = 2
+        Length = 3
+        if angle < 500:
+            angle = 500
+        elif angle > 2500:
+            angle = 2500
+        
+        Servo_H = (angle >> 8) & 0x00ff
+        Servo_L = angle & 0x00ff
+        
+        Checknum = (Function + Length + index + Servo_H + Servo_L) & 0xff
+        Servo_CMD = [0xFF, 0xFE, Function, Length, index, Servo_H, Servo_L, Checknum]
+
+        self.ser.write(bytes(Servo_CMD))
     def Speed_axis_control(self, Speed_axis_X, Speed_axis_Y, Speed_axis_Z):
         Function = 3
         Length = 8
@@ -201,4 +216,11 @@ class Raspblock():
             Buzzer_CMD = [0xFF, 0xFE, Function, Length, switch_state, Checknum]
     #         print(bytes(Servo_CMD))
             self.ser.write(bytes(Buzzer_CMD))
+            
+    def BoardData_Get(self, index):
+        Function = 5
+        Length = 1
+        Checknum = (Function + Length + index) & 0xff
+        BoardData_CMD = [0xFF, 0xFE, Function, Length, index, Checknum]
+        self.ser.write(bytes(BoardData_CMD))
     
