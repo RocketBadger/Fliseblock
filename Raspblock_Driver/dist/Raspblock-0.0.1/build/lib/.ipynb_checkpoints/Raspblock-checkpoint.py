@@ -4,7 +4,7 @@ import time
 import string
 import serial
 
-#set GPIO port to BCM mode
+#设置GPIO口为BCM编码方式
 GPIO.setmode(GPIO.BCM)
 
 class Raspblock():
@@ -16,7 +16,7 @@ class Raspblock():
         self.ser.close()
         print ("serial Close!")
 
-    def PID_Mode_control(self, Mode, Speed_KP, Speed_KI, Location_KP, Location_KI, Location_KD, Yaw_hold_KP, Yaw_hold_KI, Yaw_hold_KD):
+    def PID_Mode_control(self, Mode, Speed_KP, Speed_KI, Location_KP, Location_KI, Location_KD, Yaw_holdKP, Yaw_holdKI, Yaw_holdKD):
         Function = 1
         Length = 9
         if(Mode == 0 or Mode == 1):
@@ -26,12 +26,12 @@ class Raspblock():
         Position_KP = Location_KP
         Position_KI = Location_KI
         Position_KD = Location_KD
-        Yaw_hold_KP = Yaw_hold_KP
-        Yaw_hold_KI = Yaw_hold_KI
-        Yaw_hold_KD = Yaw_hold_KD
+        Yaw_hold_KP = Yaw_holdKP
+        Yaw_hold_KI = Yaw_holdKI
+        Yaw_hold_KD = Yaw_holdKD
         
-        Checknum = (Function + Length + Run_Mode + Velocity_KP + Velocity_KI + Position_KP + Position_KI + Position_KD + Yaw_hold_KP + Yaw_hold_KI + Yaw_hold_KD) & 0xff
-        PID_CMD = [0xFF, 0xFE, Function, Length, Run_Mode, Velocity_KP, Velocity_KI, Position_KP, Position_KI, Position_KD, Yaw_hold_KP, Yaw_hold_KI, Yaw_hold_KD, Checknum]
+        Checknum = (Function + Length + Run_Mode + Velocity_KP + Velocity_KI + Position_KP + Position_KI + Position_KD + Yaw_holdKP + Yaw_holdKI + Yaw_holdKD) & 0xff
+        PID_CMD = [0xFF, 0xFE, Function, Length, Run_Mode, Velocity_KP, Velocity_KI, Position_KP, Position_KI, Position_KD, Yaw_holdKP, Yaw_holdKI, Yaw_holdKD, Checknum]
 #         print(bytes(PID_CMD))
         self.ser.write(bytes(PID_CMD))
         
@@ -46,17 +46,33 @@ class Raspblock():
         if angle_2 < 500:
             angle_2 = 500
         elif angle_2 > 1950:
-            angle_2 = 1950
+            angl_2 = 1950
         
         ServoA_H = (angle_1 >> 8) & 0x00ff # 50(0x32) - 250(0xFA)
         ServoA_L = angle_1 & 0x00ff
-        ServoB_H = (angle_2 >> 8) & 0x00ff  # Servo is limited to 110
+        ServoB_H = (angle_2 >> 8) & 0x00ff  # 现在使用的电机因为线太短暂时限制到110
         ServoB_L = angle_2 & 0x00ff
         
         Checknum = (Function + Length + ServoA_H + ServoA_L + ServoB_H + ServoB_L) & 0xff
         Servo_CMD = [0xFF, 0xFE, Function, Length, ServoA_H, ServoA_L, ServoB_H, ServoB_L, Checknum]
 #         print(bytes(Servo_CMD))
         self.ser.write(bytes(Servo_CMD))
+    
+    def Servo_control_single(self, index, angle):
+        Function = 2
+        Length = 3
+        if angle < 500:
+            angle = 500
+        elif angle > 2500:
+            angle = 2500
+        
+        Servo_H = (angle >> 8) & 0x00ff
+        Servo_L = angle & 0x00ff
+        
+        Checknum = (Function + Length + index + Servo_H + Servo_L) & 0xff
+        Servo_CMD = [0xFF, 0xFE, Function, Length, index, Servo_H, Servo_L, Checknum]
+
+        self.ser.write(bytes(Servo_CMD))     
         
     def Speed_axis_control(self, Speed_axis_X, Speed_axis_Y, Speed_axis_Z):
         Function = 3
@@ -82,9 +98,9 @@ class Raspblock():
         else:
             axis_Z_direction = 1
             
-        Speed_axis_X_direction = axis_X_direction << 2 # 0 for positive shift, 0x04 for negative shift
-        Speed_axis_Y_direction = axis_Y_direction << 1 # 0 for positive shift, 0x02 for negative shift
-        Speed_axis_Z_direction = axis_Z_direction      # 0 for positive shift, 0x01 for negative shift
+        Speed_axis_X_direction = axis_X_direction << 2 # 0为正向移动,0x04为负向移动
+        Speed_axis_Y_direction = axis_Y_direction << 1 # 0为正向移动,0x02为负向移动
+        Speed_axis_Z_direction = axis_Z_direction      # 0为正向转动,0x01为负向转动
 
         Speed_axis_direction = Speed_axis_X_direction | Speed_axis_Y_direction | Speed_axis_Z_direction
         Checknum = (Function + Length + Speed_axis_Mode + Speed_axis_XH + Speed_axis_XL + Speed_axis_YH + Speed_axis_YL + Speed_axis_ZH + Speed_axis_ZL + Speed_axis_direction) & 0xff
@@ -111,8 +127,8 @@ class Raspblock():
         else:
             axis_Y_direction = 0
         
-        Speed_axis_X_direction = axis_X_direction << 2 # 0 for positive shift, 0x04 for negative shift
-        Speed_axis_Y_direction = axis_Y_direction << 1 # 0 for positive shift, 0x02 for negative shift
+        Speed_axis_X_direction = axis_X_direction << 2 # 0为正向移动,0x04为负向移动
+        Speed_axis_Y_direction = axis_Y_direction << 1 # 0为正向移动,0x02为负向移动
             
         Speed_axis_direction = Speed_axis_X_direction | Speed_axis_Y_direction
         Checknum = (Function + Length + Speed_axis_Mode + Speed_axis_XH + Speed_axis_XL + Speed_axis_YH + Speed_axis_YL + Speed_axis_direction) & 0xff
@@ -148,10 +164,10 @@ class Raspblock():
         else:
             Wheel_D_direction = 0
         
-        Speed_Wheel_A_direction = Wheel_A_direction << 0 # 0 is forward, 0x01 is reverse
-        Speed_Wheel_B_direction = Wheel_B_direction << 1 # 0 is forward, 0x02 is reverse
-        Speed_Wheel_C_direction = Wheel_C_direction << 2 # 0 is forward, 0x04 is reverse
-        Speed_Wheel_D_direction = Wheel_D_direction << 3 # 0 is forward, 0x04 is reverse
+        Speed_Wheel_A_direction = Wheel_A_direction << 0 # 0为正转,0x01为反转
+        Speed_Wheel_B_direction = Wheel_B_direction << 1 # 0为正转,0x02为反转
+        Speed_Wheel_C_direction = Wheel_C_direction << 2 # 0为正转,0x04为反转
+        Speed_Wheel_D_direction = Wheel_D_direction << 3 # 0为正转,0x04为反转
 
         Speed_wheel_direction = Speed_Wheel_A_direction | Speed_Wheel_B_direction | Speed_Wheel_C_direction | Speed_Wheel_D_direction
         Checknum = (Function + Length + Speed_Wheel_Mode + Speed_Wheel_A + Speed_Wheel_B + Speed_Wheel_C + Speed_Wheel_D + Speed_wheel_direction) & 0xff
@@ -183,9 +199,9 @@ class Raspblock():
         else:
             Position_disp_Z_direction = 1
         
-        Position_disp_X_direction = Position_disp_X_direction << 0 # 0 for positive shift, 0x01 for negative shift
-        Position_disp_Y_direction = Position_disp_Y_direction << 1 # 0 for positive shift, 0x02 for negative shift
-        Position_disp_Z_direction = Position_disp_Z_direction << 2 # 0 for positive shift, 0x04 for negative shift
+        Position_disp_X_direction = Position_disp_X_direction << 0 # 0为正向移动,0x01为负向移动
+        Position_disp_Y_direction = Position_disp_Y_direction << 1 # 0为正向移动,0x02为负向移动
+        Position_disp_Z_direction = Position_disp_Z_direction << 2 # 0为正向转动,0x04为负向转动
 
         Position_disp_direction = Position_disp_X_direction | Position_disp_Y_direction | Position_disp_Z_direction
         Checknum = (Function + Length + Position_disp_Mode + Position_disp_XH + Position_disp_XL + Position_disp_YH + Position_disp_YL + Position_disp_ZH + Position_disp_ZL + Position_disp_direction) & 0xff
@@ -201,4 +217,11 @@ class Raspblock():
             Buzzer_CMD = [0xFF, 0xFE, Function, Length, switch_state, Checknum]
     #         print(bytes(Servo_CMD))
             self.ser.write(bytes(Buzzer_CMD))
+    
+    def BoardData_Get(self, index):
+        Function = 5
+        Length = 1
+        Checknum = (Function + Length + index) & 0xff
+        BoardData_CMD = [0xFF, 0xFE, Function, Length, index, Checknum]
+        self.ser.write(bytes(BoardData_CMD))
     
