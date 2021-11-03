@@ -1,9 +1,11 @@
 from distutils.core import setup
  
 setup(
-    name='Fliseblock',
+    name='Raspblock',
     version='0.0.1',
     py_modules = ['Raspblock'],
-    author='Tais Merrild',
-    author_email='merrildt@gmail.com',
+    author='liusen ',
+    author_email='398310535@qq.com',
+    url='www.yahboom.com',
+    description='Raspblock底层驱动库V0.0.1'
 )
