@@ -51,7 +51,6 @@ SECRET_KEY = 'Cn1EVsUngZDbRLv4OxAFrDHSo8PsvFVP'
 client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
 
 #Log file module
-
 import logging
 from logging import handlers
 
@@ -66,23 +65,22 @@ class Logger(object):
 
     def __init__(self,filename,level='info',when='D',backCount=3,fmt='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'):
         self.logger = logging.getLogger(filename)
-        format_str = logging.Formatter(fmt)#Setting the log format
-        self.logger.setLevel(self.level_relations.get(level))#Setting the log level
-        sh = logging.StreamHandler()#Output to the screen
-        sh.setFormatter(format_str) #Set the format displayed on the screen
-        th = handlers.TimedRotatingFileHandler(filename=filename,when=when,backupCount=backCount,encoding='utf-8')#Write to the file # Specify the processor that automatically generates the file at the specified interval
-        #Instantiating the TimedRotatingFileHandler
-        #interval is the time interval, backupCount is the number of backup files that will be automatically deleted if this number is exceeded, and when is the unit of time for the interval, in the following units.
+        format_str = logging.Formatter(fmt)# Setting the log format
+        self.logger.setLevel(self.level_relations.get(level))# Setting the log level
+        sh = logging.StreamHandler()# Output to the screen
+        sh.setFormatter(format_str) # Set the format displayed on the screen
+        th = handlers.TimedRotatingFileHandler(filename=filename,when=when,backupCount=backCount,encoding='utf-8')# Write to the file # Specify the processor that automatically generates the file at the specified interval
+        # Instantiating the TimedRotatingFileHandler
+        # interval is the time interval, backupCount is the number of backup files that will be automatically deleted if this number is exceeded, and when is the unit of time for the interval, in the following units.
         # S seconds
         # M minutes
         # H hours, # D days
         # D days.
         # W per week (interval==0 for Mondays)
         # midnight Every day in the early hours of the morning
-        th.setFormatter(format_str)#Set the format written in the file
-        self.logger.addHandler(sh) #Adding objects to the logger
+        th.setFormatter(format_str)# Set the format written in the file
+        self.logger.addHandler(sh) # Adding objects to the logger
         self.logger.addHandler(th)
-
 
 # Interface function mode status machine
 #| 1 -> remote_control | 2 -> mecanum_control | 3 -> mode_presentation | 4 -> target_track | 5 -> tag_identification | 6 -> voice_broadcast | 7 -> auto_drive _identification) | 6 -> voice_broadcast | 7 -> auto_drive
