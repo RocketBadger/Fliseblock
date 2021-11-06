@@ -53,3 +53,9 @@ class Fliseblock():
         leftrightpulse = 1500
         updownpulse = 600
         self.robot.Servo_control(leftrightpulse, updownpulse)
+        
+    """
+    Movement functions 
+    """
+    #TODO: Add a function to move the robot in a straight line
+    # inspiration in Raspblock.py, and PID.py
