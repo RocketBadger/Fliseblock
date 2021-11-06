@@ -3,6 +3,11 @@ import time
 
 robbie = Fliseblock()
 
-Fliseblock.camUp(robbie, 1000)
+Fliseblock.camInit(robbie)
+print("Camera initialized")
 time.sleep(2)
-Fliseblock.camDown(robbie, 1000)    
+Fliseblock.camUp(robbie, 50)
+print("Camera up")
+time.sleep(2)
+Fliseblock.camDown(robbie, 50)    
+print("Camera down")

@@ -665,10 +665,10 @@ def dispatch(sock,cmd):
         try:
             if (regMatch != None):
                 linebits = regMatch.groupdict()
-                Speed_WheelD = int(linebits['WheelA_speed'])   #注意对应关系看协议文档
-                Speed_WheelC = int(linebits['WheelB_speed'])   #注意对应关系看协议文档
-                Speed_WheelA = int(linebits['WheelC_speed'])   #注意对应关系看协议文档
-                Speed_WheelB = int(linebits['WheelD_speed'])   #注意对应关系看协议文档
+                Speed_WheelD = int(linebits['WheelA_speed'])   # Note the correspondence in the protocol documentation
+                Speed_WheelC = int(linebits['WheelB_speed'])   
+                Speed_WheelA = int(linebits['WheelC_speed'])   
+                Speed_WheelB = int(linebits['WheelD_speed'])   
 
             else:
                 print("cmd-09 expression parse failure!")
