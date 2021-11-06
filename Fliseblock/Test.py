@@ -1,17 +1,8 @@
-from Raspblock import Raspblock # Note that this imports from dist-packages
+from Fliseblock import Fliseblock
+import time
 
-robbie = Raspblock()
+robbie = Fliseblock()
 
-count = 0
-
-# while True: 
-#     if count > 3000:
-#         count = 0
-#     Raspblock.Servo_control(robbie, count, 0)
-#     count = count + 1
-#     print(count)
-while count < 100:
-    # Raspblock.Speed_axis_control(robbie, 0, 10, 0)
-    # Raspblock.Speed_axis_Yawhold_control(robbie, -10, -10)
-    count = count + 1
-    print(count)
+Fliseblock.camUp(robbie, 1000)
+time.sleep(2)
+Fliseblock.camDown(robbie, 1000)    
