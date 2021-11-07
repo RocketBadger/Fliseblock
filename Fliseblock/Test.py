@@ -1,13 +1,11 @@
 from Fliseblock import Fliseblock
 import time
+from Tests import *
 
 robbie = Fliseblock()
 
-Fliseblock.camInit(robbie)
-print("Camera initialized")
-time.sleep(2)
-Fliseblock.camUp(robbie, 50)
-print("Camera up")
-time.sleep(2)
-Fliseblock.camDown(robbie, 50)    
-print("Camera down")
+camServosTest(robbie)
+
+Fliseblock.wheel_control_forwards(robbie, 500)
+Fliseblock.wheel_control_backwards(robbie, 500)
+
