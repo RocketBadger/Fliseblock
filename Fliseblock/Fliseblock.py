@@ -64,8 +64,6 @@ class Fliseblock():
     """
     Movement functions 
     """
-    #TODO: Add a function to move the robot in a straight line
-    # inspiration in Raspblock.py, and PID.py
     def wheel_control_forwards(self, duration):
         print("Forwards")
         # if duration == 0:
@@ -73,26 +71,26 @@ class Fliseblock():
         #         self.robot.Speed_Wheel_control(8, 8, 8, 8)
         for i in range (1, duration):
             self.robot.Speed_Wheel_control(8, 8, 8, 8)
-            print(i)
+            # print(i)
 
     def wheel_control_backwards(self, duration):
         print("Backwards")
         for i in range (1, duration):
             self.robot.Speed_Wheel_control(-8, -8, -8, -8)
-            print(i)
+            # print(i)
 
     #Spin left and spin right both a little iffy
     def wheel_control_spin_left(self, duration):
         print("Left")
         for i in range (1, duration):
             self.robot.Speed_Wheel_control(8, -8, -8, 8)
-            print(i)
+            # print(i)
             
     def wheel_control_spin_right(self, duration):
         print("Right")
         for i in range (1, duration):
             self.robot.Speed_Wheel_control(-8, 8, 8, -8)
-            print(i)
+            # print(i)
     
     def wheel_control_stop(self):
         print("Stop")
