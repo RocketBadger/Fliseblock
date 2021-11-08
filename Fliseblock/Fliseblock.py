@@ -28,7 +28,6 @@ class Fliseblock():
     camLeft + camRight control the lower servo
     50 appears to be the smallest value that the servo can move
     """
-    
     def camUp(self, num):
         global updownpulse
         updownpulse -= num
