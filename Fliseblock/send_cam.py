@@ -2,6 +2,7 @@ import base64
 import cv2
 import zmq
 import threading
+import time
 
 def send_camera():
     context = zmq.Context()
@@ -11,7 +12,7 @@ def send_camera():
     while True:
         try:
             grabbed, frame = camera.read()  # grab the current frame
-            #print(grabbed, frame)
+            # print(grabbed, frame)
             frame = cv2.resize(frame, (640, 480))  # resize the frame
             encoded, buffer = cv2.imencode('.jpg', frame)
             #cv2.imshow('abc', )
@@ -24,5 +25,8 @@ def send_camera():
             cv2.destroyAllWindows()
             break
         
-camThread = threading.Thread(target=send_camera)
+camThread = threading.Thread(target=send_camera, daemon=True)
 camThread.start()
+camThread.join()
+# time.sleep(2)
+# print(camThread.is_alive())
