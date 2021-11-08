@@ -25,8 +25,9 @@ def send_camera():
             cv2.destroyAllWindows()
             break
         
-camThread = threading.Thread(target=send_camera, daemon=True)
-camThread.start()
-camThread.join()
-# time.sleep(2)
-# print(camThread.is_alive())
+def stream_camera():
+    camThread = threading.Thread(target=send_camera)
+    camThread.start()
+    # camThread.join()
+    # time.sleep(2)
+    # print(camThread.is_alive())
