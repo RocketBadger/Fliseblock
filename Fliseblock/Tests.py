@@ -17,5 +17,7 @@ def camServosTest(robot):
     Fliseblock.camLeft(robot, 500)
     
 def wheelControlTest(robot):
-    Fliseblock.wheel_control_forwards(robot, 500)
-    Fliseblock.wheel_control_backwards(robot, 500)
+    Fliseblock.wheel_control_forwards(robot, 1000)
+    Fliseblock.wheel_control_backwards(robot, 1000)
+    Fliseblock.wheel_control_spin_left(robot, 1000)
+    Fliseblock.wheel_control_spin_right(robot, 1000)
