@@ -1,27 +1,15 @@
 from Fliseblock import Fliseblock
 import time
-from Tests import *
 from send_cam import stream_camera
-from PID import PositionalPID
+from Tests import *
+from Edge_detection import stream_camera_edged
 
 robbie = Fliseblock()
 
-# print('Streaming Camera')
-# stream_camera()
-# print('Sleeping 2 seconds')
-# time.sleep(2)
-# print('Running camServosTest')
-# camServosTest(robbie)
-# print('Sleeping 2 seconds')
-# time.sleep(2)
-# print('Running camServosTest')
-# camServosTest(robbie)
-# print('Sleeping 2 seconds')
-# time.sleep(2)
-# print('Running wheelControlTest')
-# wheelControlTest(robbie)
+Fliseblock.camInitPos(robbie)
 
-xservo_pid = PID.PositionalPID(1.1, 0.2, 0.8)
-yservo_pid = PID.PositionalPID(0.8, 0.2, 0.8)
-#Autopilot steering angle PID
-Z_axis_pid = PID.PositionalPID(0.7, 0.00, 1.8)
+# stream_camera_edged()
+stream_camera()
+print("camera stream started")
+# time.sleep(10)
+# camServosTest(robbie)

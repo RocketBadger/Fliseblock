@@ -1,4 +1,5 @@
 from Raspblock import Raspblock
+# from PID import PositionalPID
 
 # robbie = Raspblock()
 
@@ -11,23 +12,21 @@ class Fliseblock():
         global updownpulse
         updownpulse = 0
         
-    
     """
-    Initialize camera position, and set the servo to the middle position
+    Camera Functions:
     """
-    def camInit(self):
+    #Initialize camera position, and set the servo to the middle position
+    def camInitPos(self):
         global leftrightpulse, updownpulse
         leftrightpulse = 1500
         updownpulse = 600
         self.robot.Servo_control(leftrightpulse, updownpulse)
         print("Camera initialized")
-    
-    """
-    Camera functions
-    camUp + camDown control the upper servo
-    camLeft + camRight control the lower servo
-    50 appears to be the smallest value that the servo can move
-    """
+  
+    #camUp + camDown control the upper servo
+    #camLeft + camRight control the lower servo
+    #50 appears to be the smallest value that the servo can move
+  
     def camUp(self, num):
         global updownpulse
         updownpulse -= num
@@ -61,7 +60,7 @@ class Fliseblock():
         print("Camera right")
         
     """
-    Movement functions 
+    Movement functions: 
     """
     def wheel_control_forwards(self, duration):
         print("Forwards")
@@ -94,3 +93,13 @@ class Fliseblock():
     def wheel_control_stop(self):
         print("Stop")
         self.robot.Speed_Wheel_control(0, 0, 0, 0)
+        
+        """
+        PID test
+        """
+        #TODO
+    # def PID_test(self):
+    #     xservo_pid = PositionalPID(1.1, 0.2, 0.8)
+    #     yservo_pid = PositionalPID(0.8, 0.2, 0.8)
+    #     #Autopilot steering angle PID
+    #     Z_axis_pid = PositionalPID(0.7, 0.00, 1.8)
