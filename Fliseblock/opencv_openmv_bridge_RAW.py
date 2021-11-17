@@ -34,7 +34,7 @@ class Camera:
             serial.SerialException
         """
         # Sending 'snap' command causes camera to take snapshot
-        # self.port.write('snap')
+        self.port.write('snap')
         self.port.flush()
 
         # Read 'size' bytes from serial port
@@ -54,21 +54,21 @@ while(True):
     cap = Camera(device='/dev/ttyACM0')
     # Capture frame-by-frame
     im1 = cap.read_image()
-    print(im1)
+
     
-    # # Our operations on the frame come here
-    # gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    # Our operations on the frame come here
+    gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
 
-    # # Saves image of the current frame in jpg file
-    # # name = 'frame' + str(currentFrame) + '.jpg'
-    # # cv2.imwrite(name, frame)
+    # Saves image of the current frame in jpg file
+    # name = 'frame' + str(currentFrame) + '.jpg'
+    # cv2.imwrite(name, frame)
 
-    # # Display the resulting frame
-    # cv2.imshow('im1',im1)
-    # # cv2.imshow('im1',gray)
+    # Display the resulting frame
+    cv2.imshow('im1',im1)
+    # cv2.imshow('im1',gray)
 
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
-    # # To stop duplicate images
-    # currentFrame += 1
+    # To stop duplicate images
+    currentFrame += 1
