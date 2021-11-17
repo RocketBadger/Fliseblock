@@ -21,7 +21,6 @@ class Camera:
                                   xonxoff=False, rtscts=False,
                                   stopbits=serial.STOPBITS_ONE,
                                   timeout=None, dsrdtr=True)
-
         # Important: reset buffers for reliabile restarts of OpenMV Cam
         self.port.reset_input_buffer()
         self.port.reset_output_buffer()
@@ -34,41 +33,35 @@ class Camera:
             serial.SerialException
         """
         # Sending 'snap' command causes camera to take snapshot
-        # self.port.write('snap')
+        self.port.write('snap')
         self.port.flush()
-
         # Read 'size' bytes from serial port
         size = struct.unpack('<L', self.port.read(4))[0]
         image_data = self.port.read(size)
         image = np.array(PILImage.open(io.BytesIO(image_data)))
-
         return image
 
-
-
 currentFrame = 0
-
 while(True):
     # Create a camera by just giving the ttyACM depending on your connection value
     # Change the following line depending on your connection
     cap = Camera(device='/dev/ttyACM0')
     # Capture frame-by-frame
     im1 = cap.read_image()
-    print(im1)
-    
-    # # Our operations on the frame come here
-    # gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
 
-    # # Saves image of the current frame in jpg file
-    # # name = 'frame' + str(currentFrame) + '.jpg'
-    # # cv2.imwrite(name, frame)
+    # Our operations on the frame come here
+    gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
 
-    # # Display the resulting frame
-    # cv2.imshow('im1',im1)
-    # # cv2.imshow('im1',gray)
+    # Saves image of the current frame in jpg file
+    # name = 'frame' + str(currentFrame) + '.jpg'
+    # cv2.imwrite(name, frame)
 
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
+    # Display the resulting frame
+    cv2.imshow('im1',im1)
+    # cv2.imshow('im1',gray)
 
-    # # To stop duplicate images
-    # currentFrame += 1
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+    # To stop duplicate images
+    currentFrame += 1
