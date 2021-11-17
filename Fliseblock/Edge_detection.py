@@ -99,24 +99,24 @@ def detect_edges():
     footage_socket.connect('tcp://192.168.0.212:5555')
     camera = cv2.VideoCapture(0) 
     
-    # while True:
-    grabbed, frame = camera.read()
-    canny_image = canny_edge_detector(frame)
-    cropped_image = region_of_interest(canny_image)
-    
-    lines = cv2.HoughLinesP(cropped_image, 2, np.pi / 180, 100, 
-                            np.array([]), minLineLength = 40, 
-                            maxLineGap = 5) 
-    
-    averaged_lines = average_slope_intercept(frame, lines) 
-    line_image = display_lines(frame, averaged_lines)
-    combo_image = cv2.addWeighted(frame, 0.8, line_image, 1, 1) 
-    
-    # cv2.imshow("results", combo_image)
-    encoded, buffer = cv2.imencode('.jpg', combo_image)
-    jpg_as_text = base64.b64encode(buffer)
+    while True:
+        grabbed, frame = camera.read()
+        canny_image = canny_edge_detector(frame)
+        cropped_image = region_of_interest(canny_image)
 
-    footage_socket.send(jpg_as_text)
+        lines = cv2.HoughLinesP(cropped_image, 2, np.pi / 180, 100, 
+                                np.array([]), minLineLength = 40, 
+                                maxLineGap = 5) 
+
+        averaged_lines = average_slope_intercept(frame, lines) 
+        line_image = display_lines(frame, averaged_lines)
+        combo_image = cv2.addWeighted(frame, 0.8, line_image, 1, 1) 
+
+        # cv2.imshow("results", combo_image)
+        encoded, buffer = cv2.imencode('.jpg', combo_image)
+        jpg_as_text = base64.b64encode(buffer)
+
+        footage_socket.send(jpg_as_text)
 
 def stream_camera_edged():
     camThread = threading.Thread(target=detect_edges)

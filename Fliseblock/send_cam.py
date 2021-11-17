@@ -10,18 +10,23 @@ def send_camera():
     footage_socket.connect('tcp://192.168.0.212:5555')
     camera = cv2.VideoCapture(0)  # init the camera
     while True:
-        grabbed, frame = camera.read()  # grab the current frame
-        # print(grabbed, frame)
-        frame = cv2.resize(frame, (640, 480))  # resize the frame
-        encoded, buffer = cv2.imencode('.jpg', frame)
-        #cv2.imshow('abc', )
-        jpg_as_text = base64.b64encode(buffer)
+        try:
+            grabbed, frame = camera.read()  # grab the current frame
+            # print(grabbed, frame)
+            frame = cv2.resize(frame, (640, 480))  # resize the frame
+            encoded, buffer = cv2.imencode('.jpg', frame)
+            #cv2.imshow('abc', )
+            jpg_as_text = base64.b64encode(buffer)
 
-        footage_socket.send(jpg_as_text)
+            footage_socket.send(jpg_as_text)
 
-def stream_camera():
-    camThread = threading.Thread(target=send_camera)
-    camThread.start()
-    # camThread.join()
-    # time.sleep(2)
-    # print(camThread.is_alive())
+        except KeyboardInterrupt:
+            camera.release()
+            cv2.destroyAllWindows()
+            break
+        
+camThread = threading.Thread(target=send_camera, daemon=True)
+camThread.start()
+camThread.join()
+# time.sleep(2)
+# print(camThread.is_alive())
