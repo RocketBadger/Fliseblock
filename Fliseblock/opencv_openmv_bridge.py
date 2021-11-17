@@ -7,6 +7,7 @@ import cv2
 import base64
 import zmq
 import threading
+import time
 
 # Camera object to create the snaps/frames/images that
 #  will be deserialized later in the opencv code
@@ -76,7 +77,8 @@ while(True):
     camThread = threading.Thread(target=cap.read_image())
     camThread.start()
     camThread.join()
-    print("Camera thread is alive: " + camThread.is_alive())
+    time.sleep(2)
+    print("Camera thread is alive: " + str(camThread.is_alive()))
     
     # # Our operations on the frame come here
     # gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
