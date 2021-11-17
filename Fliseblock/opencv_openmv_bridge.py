@@ -10,7 +10,7 @@ import threading
 import time
 
 # Camera object to create the snaps/frames/images that
-#  will be deserialized later in the opencv code
+#  will be deserialized later
 class Camera:
     def __init__(self, device='/dev/ttyACM0'):
         """Reads images from OpenMV Cam
@@ -67,32 +67,11 @@ class Camera:
 currentFrame = 0
 
 while(True):
-    # Create a camera by just giving the ttyACM depending on your connection value
-    # Change the following line depending on your connection
     cap = Camera(device='/dev/ttyACM0')
-    # Capture frame-by-frame
-    # im1 = cap.read_image()
-    # print(im1)
-    
+
     camThread = threading.Thread(target=cap.read_image())
     camThread.start()
     camThread.join()
     time.sleep(2)
     print("Camera thread is alive: " + str(camThread.is_alive()))
-    
-    # # Our operations on the frame come here
-    # gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
 
-    # # Saves image of the current frame in jpg file
-    # # name = 'frame' + str(currentFrame) + '.jpg'
-    # # cv2.imwrite(name, frame)
-
-    # # Display the resulting frame
-    # cv2.imshow('im1',im1)
-    # # cv2.imshow('im1',gray)
-
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
-
-    # # To stop duplicate images
-    # currentFrame += 1
