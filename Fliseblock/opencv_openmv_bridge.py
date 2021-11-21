@@ -25,7 +25,6 @@ class Camera:
                                   xonxoff=False, rtscts=False,
                                   stopbits=serial.STOPBITS_ONE,
                                   timeout=None, dsrdtr=True)
-
         # Important: reset buffers for reliabile restarts of OpenMV Cam
         self.port.reset_input_buffer()
         self.port.reset_output_buffer()
@@ -40,8 +39,6 @@ class Camera:
         context = zmq.Context()
         footage_socket = context.socket(zmq.PUB)
         footage_socket.connect('tcp://192.168.0.39:5555')
-
-
         while True:
             try:
                 # Sending 'snap' command causes camera to take snapshot
@@ -63,15 +60,12 @@ class Camera:
                 footage_socket.send(jpg_as_text)
             except KeyboardInterrupt:
                 break
+            
+    def send_image():
+        cap = Camera(device='/dev/ttyACM0')
 
-currentFrame = 0
-
-while(True):
-    cap = Camera(device='/dev/ttyACM0')
-
-    camThread = threading.Thread(target=cap.read_image())
-    camThread.start()
-    camThread.join()
-    time.sleep(2)
-    print("Camera thread is alive: " + str(camThread.is_alive()))
-
+        camThread = threading.Thread(target=cap.read_image())
+        camThread.start()
+        camThread.join()
+        time.sleep(2)
+        print("Camera thread is alive: " + str(camThread.is_alive()))
