@@ -44,28 +44,20 @@ class Camera:
                 # Sending 'snap' command causes camera to take snapshot
                 self.port.write(str.encode('snap'))
                 self.port.flush()
-
                 # Read 'size' bytes from serial port
                 size = struct.unpack('<L', self.port.read(4))[0]
                 image_data = self.port.read(size)
                 image = np.array(PILImage.open(io.BytesIO(image_data)))
-                
                 print(image)
-                
                 frame = cv2.resize(image, (640, 480))  # resize the frame
                 encoded, buffer = cv2.imencode('.jpg', frame)
-                #cv2.imshow('abc', )
                 jpg_as_text = base64.b64encode(buffer)
-
                 footage_socket.send(jpg_as_text)
             except KeyboardInterrupt:
                 break
             
     def send_image():
         cap = Camera(device='/dev/ttyACM0')
-
         camThread = threading.Thread(target=cap.read_image())
         camThread.start()
         camThread.join()
-        time.sleep(2)
-        print("Camera thread is alive: " + str(camThread.is_alive()))
