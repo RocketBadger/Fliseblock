@@ -4,7 +4,7 @@ import time
 # robot = Fliseblock()
 
 def camServosTest(robot):
-    Fliseblock.camInit(robot)
+    Fliseblock.camInitPos(robot)
     time.sleep(0.5)
     Fliseblock.camUp(robot, 500)
     time.sleep(0.5)

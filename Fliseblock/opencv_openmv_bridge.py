@@ -58,6 +58,7 @@ class Camera:
             
     def send_image():
         cap = Camera(device='/dev/ttyACM0')
-        camThread = threading.Thread(target=cap.read_image())
+        camThread = threading.Thread(target=cap.read_image, daemon=True)
         camThread.start()
-        camThread.join()
+        # camThread.join()
+        

@@ -18,8 +18,8 @@ class Fliseblock():
     #Initialize camera position, and set the servo to the middle position
     def camInitPos(self):
         global leftrightpulse, updownpulse
-        leftrightpulse = 1500
-        updownpulse = 600
+        leftrightpulse = 1450
+        updownpulse = 1100
         self.robot.Servo_control(leftrightpulse, updownpulse)
         print("Camera initialized")
   
