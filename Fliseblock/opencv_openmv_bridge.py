@@ -55,7 +55,9 @@ class Camera:
                 # jpg_as_text = base64.b64encode(buffer)
                 # footage_socket.send(jpg_as_text)
                 data = self.port.read(1024)
-                print(data)
+                lines = str(data).split("}")
+                for line in lines:
+                    print(line)
             except KeyboardInterrupt:
                 break
             
