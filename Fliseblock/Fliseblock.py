@@ -19,7 +19,7 @@ class Fliseblock():
     def camInitPos(self):
         global leftrightpulse, updownpulse
         leftrightpulse = 1450
-        updownpulse = 1100
+        updownpulse = 1000
         self.robot.Servo_control(leftrightpulse, updownpulse)
         print("Camera initialized")
   
