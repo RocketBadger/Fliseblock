@@ -1,14 +1,5 @@
+import serial, threading
 import numpy as np
-import io
-import struct
-import serial
-from PIL import Image as PILImage
-import cv2
-import base64
-import zmq
-import threading
-import time
-
 # Camera object to create the snaps/frames/images that
 #  will be deserialized later
 class Camera:
@@ -29,36 +20,27 @@ class Camera:
         self.port.reset_input_buffer()
         self.port.reset_output_buffer()
 
-    def read_image(self):
+    def read_lines(self):
         """Read image from OpenMV Cam
         Returns:
             image (ndarray): Image
         Raises:
             serial.SerialException
         """
-        context = zmq.Context()
-        footage_socket = context.socket(zmq.PUB)
-        footage_socket.connect('tcp://192.168.0.39:5555')
-        
         while True:
             try:
                 # Sending 'snap' command causes camera to take snapshot
                 self.port.write(str.encode('snap'))
                 self.port.flush()
-                # Read 'size' bytes from serial port
-                size = struct.unpack('<L', self.port.read(4))[0]
-                image_data = self.port.read(size)
-                image = np.array(PILImage.open(io.BytesIO(image_data)))
-                print(image)
-                frame = cv2.resize(image, (640, 480))  # resize the frame
-                encoded, buffer = cv2.imencode('.jpg', frame)
-                jpg_as_text = base64.b64encode(buffer)
-                footage_socket.send(jpg_as_text)
+                data = self.port.read(1024) # getting data from camera
+                lines = np.array(str(data).split("}")) # splitting data into lines
+                for line in lines:
+                    print(line)
+                    # should be able to perform other operations here
             except KeyboardInterrupt:
                 break
             
-    def send_image():
+    def get_lines():
         cap = Camera(device='/dev/ttyACM0')
-        camThread = threading.Thread(target=cap.read_image, daemon=True)
+        camThread = threading.Thread(target=cap.read_lines, daemon=True)
         camThread.start()
-        # camThread.join()
