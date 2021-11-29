@@ -1,4 +1,4 @@
-import serial, threading, json
+import serial, threading, json, math
 import numpy as np
 
 class Camera:
@@ -21,7 +21,7 @@ class Camera:
 
     def read_lines(self):
         """Read line data gained by linear regression from OpenMV Cam
-        Returns:
+            Returns:
             A sequence of variables representing different characteristics of a line
                 Example: {"x1":211, "y1":0, "x2":134, "y2":239, "length":251, "magnitude":51, "theta":18, "rho":201}
             Where 
@@ -39,13 +39,14 @@ class Camera:
                 self.port.flush()
                 data = self.port.read(1024) # getting data from camera
                 lines = np.array(str(data).split("}")) # splitting data into lines
+                
                 for line in lines:
                     if line[0] == '{' and "rho" in line: # if line is whole
-                        line = line + "}" # add closing bracket removed by split
-                        line = json.loads(line) # convert to dict
-                        data = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho'])
+                        line = json.loads((line + "}")) # add closing bracket removed by split, and convert to dict
+                        data = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho']) # create line data object. Necessary? could dict be used all over instead?
                         print("Line data == " + str(data.__dict__))
 
+                        # TODO: consider storing lines in a deque or something, if necessary
             except KeyboardInterrupt:
                 break
             
@@ -73,12 +74,10 @@ class Camera:
             else: # quadrant 2
                 return (math.sin(math.radians(180 - line.theta())),
                     math.cos(math.radians(line.theta())) * line.rho())
-
-    def line_to_theta_and_rho_error(line, img):
-        t, r = line_to_theta_and_rho(line)
-        return (t, r - (img.width() // 2))
     
 class line_data():
+    """An object representing a line.
+    """
     def __init__(self, x1, y1, x2, y2, length, magnitude, theta, rho):
         self.x1 = x1
         self.y1 = y1
