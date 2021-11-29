@@ -3,7 +3,7 @@ import numpy as np
 
 class Camera:
     def __init__(self, device='/dev/ttyACM0'):
-        """Reads images from OpenMV Cam
+        """Reads lines from OpenMV Cam
         Args:
             device (str): Serial device
         Raises:
@@ -29,9 +29,8 @@ class Camera:
                     length is the length of the line. 
                         magnitude is the strength of the line detection. A simple threshold on it is enough to accept or reject the line.
                             theta and rho is the angle of the line, using polar math.
-            
         Raises:
-            serial.SerialException
+            KeyboardInterrupt
         """
         while True:
             try:
@@ -41,9 +40,11 @@ class Camera:
                 data = self.port.read(1024) # getting data from camera
                 lines = np.array(str(data).split("}")) # splitting data into lines
                 for line in lines:
-                    line.replace("None", "")
-                    print(line)
-                    # should be able to perform other operations here
+                    if line[0] == '{' and "rho" in line: # if line is not empty
+                        # line.replace("None", "")
+                        print(line + '}')
+
+
             except KeyboardInterrupt:
                 break
             
@@ -77,6 +78,15 @@ class Camera:
         return (t, r - (img.width() // 2))
     
 class line_data:
-    def __init__(self, *args):
+    def __init__(self, x1, y1, x2, y2, length, magnitude, theta, rho):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.length = length
+        self.magnitude = magnitude
+        self.theta = theta
+        self.rho = rho
+    
         
         

@@ -3,7 +3,7 @@ from Tests import *
 import serial
 # from opencv_openmv_bridge import Camera
 # Camera.send_image()
-from get_line_data import Camera
+from line_data import Camera
 
 robbie = Fliseblock()
 
