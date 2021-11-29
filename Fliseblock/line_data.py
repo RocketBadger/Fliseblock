@@ -45,18 +45,9 @@ class Camera:
                         print(line)
                         line = json.loads(line) # convert to dict
                         print(line)
-                        # data = line.split()
-                        
-                        # i = 0
-                        # for var in data:
-                        #     print(var)
-                        #     for char in var:
-                        #         num = ""
-                        #         if char.isdigit():
-                        #             num = num + char
-                        #         line_data()[i] = int(num)
-                        #     print(line_data()[i])
-                        #     i = i + 1
+                        data = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho'])
+                        print(data.x1)
+                        print("Line data == " + str(data.__dict__))
 
             except KeyboardInterrupt:
                 break
