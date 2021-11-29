@@ -42,11 +42,8 @@ class Camera:
                 for line in lines:
                     if line[0] == '{' and "rho" in line: # if line is whole
                         line = line + "}" # add closing bracket removed by split
-                        print(line)
                         line = json.loads(line) # convert to dict
-                        print(line)
                         data = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho'])
-                        print(data.x1)
                         print("Line data == " + str(data.__dict__))
 
             except KeyboardInterrupt:
