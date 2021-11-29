@@ -1,4 +1,4 @@
-import serial, threading, math
+import serial, threading, json
 import numpy as np
 
 class Camera:
@@ -43,14 +43,27 @@ class Camera:
                     if line[0] == '{' and "rho" in line: # if line is whole
                         line = line + "}" # add closing bracket removed by split
                         print(line)
-
+                        line = json.loads(line) # convert to dict
+                        print(line)
+                        # data = line.split()
+                        
+                        # i = 0
+                        # for var in data:
+                        #     print(var)
+                        #     for char in var:
+                        #         num = ""
+                        #         if char.isdigit():
+                        #             num = num + char
+                        #         line_data()[i] = int(num)
+                        #     print(line_data()[i])
+                        #     i = i + 1
 
             except KeyboardInterrupt:
                 break
             
     def get_lines():
         cap = Camera(device='/dev/ttyACM0')
-        camThread = threading.Thread(target=cap.read_lines) # is daemon true necessary?
+        camThread = threading.Thread(target=cap.read_lines)
         camThread.start()
 
     def line_to_theta_and_rho(line):
@@ -77,7 +90,7 @@ class Camera:
         t, r = line_to_theta_and_rho(line)
         return (t, r - (img.width() // 2))
     
-class line_data:
+class line_data():
     def __init__(self, x1, y1, x2, y2, length, magnitude, theta, rho):
         self.x1 = x1
         self.y1 = y1
