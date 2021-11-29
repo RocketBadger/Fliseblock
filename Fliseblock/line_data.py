@@ -40,9 +40,9 @@ class Camera:
                 data = self.port.read(1024) # getting data from camera
                 lines = np.array(str(data).split("}")) # splitting data into lines
                 for line in lines:
-                    if line[0] == '{' and "rho" in line: # if line is not empty
-                        # line.replace("None", "")
-                        print(line + '}')
+                    if line[0] == '{' and "rho" in line: # if line is whole
+                        line = line + "}" # add closing bracket removed by split
+                        print(line)
 
 
             except KeyboardInterrupt:
