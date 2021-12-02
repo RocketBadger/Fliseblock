@@ -37,14 +37,18 @@ class Camera:
                 # Sending 'snap' command causes camera to take snapshot
                 self.port.write(str.encode('snap'))
                 self.port.flush()
-                data = self.port.read(1024) # getting data from camera
-                lines = np.array(str(data).split("}")) # splitting data into lines
+                waiting = self.port.inWaiting()
+                # print(waiting)
+                data = self.port.read(waiting) # getting data from camera
+                # print(data)
+                # lines = np.array(str(data).split("}")) # splitting data into lines
                 
-                for line in lines:
-                    if line[0] == '{' and "rho" in line: # if line is whole
-                        line = json.loads((line + "}")) # add closing bracket removed by split, and convert to dict
-                        data = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho']) # create line data object. Necessary? could dict be used all over instead?
-                        print("Line data == " + str(data.__dict__))
+                # for line in lines:
+                # if "x1" and "rho" in data: # if line is whole
+                if waiting > 0:
+                    line = json.loads(data) # add closing bracket removed by split, and convert to dict
+                    Linedata = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho']) # create line data object. Necessary? could dict be used all over instead?
+                    print("Line data == " + str(Linedata.__dict__))
 
                         # TODO: consider storing lines in a deque or something, if necessary
             except KeyboardInterrupt:
