@@ -59,14 +59,8 @@ class Camera:
                 self.port.write(str.encode('snap'))
                 self.port.flush()
                 waiting = self.port.inWaiting()
-                # print(waiting)
                 data = self.port.read(waiting) # getting data from camera
-                # print(data)
-                # lines = np.array(str(data).split("}")) # splitting data into lines
-                
-                # for line in lines:
-                # if "x1" and "rho" in data: # if line is whole
-                # if waiting > 80:
+
                 if str(data).count('x1') == 1: # ignore doubled lines
                     line = json.loads(data) # convert to dict
                     Linedata = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho']) # create line data object. Necessary? could dict be used all over instead?
@@ -76,7 +70,6 @@ class Camera:
                         print("Line is vertical")
                     if ((Linedata.y1 - Linedata.y2) > -10 and (Linedata.y1 - Linedata.y2) < 10):
                         print("Line is horizontal")
-                    # # print("line_to_theta_and_rho says: " + str(line_to_theta_and_rho(Linedata)))
                     # print("line_to_theta_and_rho says: " + str(self.line_to_theta_and_rho(Linedata)))
             except KeyboardInterrupt:
                 print(data)
