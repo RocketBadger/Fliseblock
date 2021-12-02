@@ -18,12 +18,33 @@ class Camera:
         # Reset buffers for reliable restarts of OpenMV Cam
         self.port.reset_input_buffer()
         self.port.reset_output_buffer()
+    
+    def line_to_theta_and_rho(self, line):
+        if line.rho < 0: # quadrant 3/4
+            if line.theta < 90: # quadrant 3 (unused)
+                return (math.sin(math.radians(line.theta)),
+                    math.cos(math.radians(line.theta + 180)) * -line.rho)
+            else: # quadrant 4
+                return (math.sin(math.radians(line.theta - 180)),
+                    math.cos(math.radians(line.theta + 180)) * -line.rho)
+        else: # quadrant 1/2
+            if line.theta < 90: # quadrant 1
+                if line.theta < 45:
+                    return (math.sin(math.radians(180 - line.theta)),
+                        math.cos(math.radians(line.theta)) * line.rho)
+                else:
+                    return (math.sin(math.radians(line.theta - 180)),
+                        math.cos(math.radians(line.theta)) * line.rho)
+            else: # quadrant 2
+                return (math.sin(math.radians(180 - line.theta)),
+                    math.cos(math.radians(line.theta)) * line.rho)
+    
 
     def read_lines(self):
         """Read line data gained by linear regression from OpenMV Cam
             Returns:
             A sequence of variables representing different characteristics of a line
-                Example: {"x1":211, "y1":0, "x2":134, "y2":239, "length":251, "magnitude":51, "theta":18, "rho":201}
+                Example: {'x1': 67, 'y1': 0, 'x2': 12, 'y2': 59, 'length': 81, 'magnitude': 16, 'theta': 43, 'rho': 49}
             Where 
                 x and y are the coordinates of the line. 
                     length is the length of the line. 
@@ -45,40 +66,27 @@ class Camera:
                 
                 # for line in lines:
                 # if "x1" and "rho" in data: # if line is whole
-                if waiting > 0:
-                    line = json.loads(data) # add closing bracket removed by split, and convert to dict
+                # if waiting > 80:
+                if str(data).count('x1') == 1: # ignore doubled lines
+                    line = json.loads(data) # convert to dict
                     Linedata = line_data(line['x1'], line['y1'], line['x2'], line['y2'], line['length'], line['magnitude'], line['theta'], line['rho']) # create line data object. Necessary? could dict be used all over instead?
-                    print("Line data == " + str(Linedata.__dict__))
-
-                        # TODO: consider storing lines in a deque or something, if necessary
+                    # print("Line data == " + str(Linedata.__dict__))
+                    print(Linedata.x1)
+                    if ((Linedata.x1 - Linedata.x2) > -10 and (Linedata.x1 - Linedata.x2) < 10):
+                        print("Line is vertical")
+                    if ((Linedata.y1 - Linedata.y2) > -10 and (Linedata.y1 - Linedata.y2) < 10):
+                        print("Line is horizontal")
+                    # # print("line_to_theta_and_rho says: " + str(line_to_theta_and_rho(Linedata)))
+                    # print("line_to_theta_and_rho says: " + str(self.line_to_theta_and_rho(Linedata)))
             except KeyboardInterrupt:
+                print(data)
                 break
             
     def get_lines():
         cap = Camera(device='/dev/ttyACM0')
-        camThread = threading.Thread(target=cap.read_lines)
+        camThread = threading.Thread(target=cap.read_lines, daemon=True)
         camThread.start()
 
-    def line_to_theta_and_rho(line):
-        if line.rho() < 0: # quadrant 3/4
-            if line.theta() < 90: # quadrant 3 (unused)
-                return (math.sin(math.radians(line.theta())),
-                    math.cos(math.radians(line.theta() + 180)) * -line.rho())
-            else: # quadrant 4
-                return (math.sin(math.radians(line.theta() - 180)),
-                    math.cos(math.radians(line.theta() + 180)) * -line.rho())
-        else: # quadrant 1/2
-            if line.theta() < 90: # quadrant 1
-                if line.theta() < 45:
-                    return (math.sin(math.radians(180 - line.theta())),
-                        math.cos(math.radians(line.theta())) * line.rho())
-                else:
-                    return (math.sin(math.radians(line.theta() - 180)),
-                        math.cos(math.radians(line.theta())) * line.rho())
-            else: # quadrant 2
-                return (math.sin(math.radians(180 - line.theta())),
-                    math.cos(math.radians(line.theta())) * line.rho())
-    
 class line_data():
     """An object representing a line.
     """
@@ -91,6 +99,4 @@ class line_data():
         self.magnitude = magnitude
         self.theta = theta
         self.rho = rho
-    
-        
-        
+      
